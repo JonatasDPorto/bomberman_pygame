@@ -38,7 +38,7 @@ class RandomPlayerAgent(PlayerAgent):
             elif self.last_action == Direction.DOWN:
                 d = 40
 
-        self.last_action = random.choices(actions, weights=[1/100, 0/100, (a + 10)/100, (b + 10)/100, (c + 19)/100, (d + 10)/100, 10/100])[0]
+        self.last_action = random.choices(actions, weights=[1/100, 0/100, (a + 12)/100, (b + 12)/100, (c + 12)/100, (d + 12)/100, 11/100])[0]
 
         return self.last_action
 

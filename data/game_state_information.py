@@ -22,5 +22,6 @@ class GameStateInformation:
             position = sprite.rect.topleft
             x = position[0] // TILE_SIZE
             y = position[1] // TILE_SIZE
-            matrix[x][y] = 1
+            if (0 >= x < GRID_SIZE) and (0 >= x < GRID_SIZE):
+                matrix[x][y] = 1
         

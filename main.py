@@ -1,3 +1,4 @@
+import time
 import pygame
 import sys
 
@@ -20,15 +21,19 @@ game.create_map()
 
 
 game.create_players([
-    DefaultPlayerAgent(DefaultPlayerAgentKeyboardType.ARROWS),
-    DefaultPlayerAgent(DefaultPlayerAgentKeyboardType.WASD),
+    # DefaultPlayerAgent(DefaultPlayerAgentKeyboardType.ARROWS),
+    # DefaultPlayerAgent(DefaultPlayerAgentKeyboardType.WASD),
+    RandomPlayerAgent(),
+    RandomPlayerAgent(),
     RandomPlayerAgent(),
     RandomPlayerAgent()
 ])
 running = True
 
 last_frame_time = pygame.time.get_ticks()
-animations_time = 150
+animations_time = 100
+
+first_frame = True
 
 while running:
     original_screen.fill(BACKGROUND_COLOR)
@@ -52,6 +57,10 @@ while running:
 
     pygame.display.flip()
     clock.tick(FPS)
+    if first_frame:
+        first_frame = False
+        time.sleep(5)
+        
 
 pygame.quit()
 sys.exit()

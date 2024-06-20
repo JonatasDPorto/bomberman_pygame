@@ -51,8 +51,8 @@ class Game:
                 
     def create_players(self, players: List[PlayerAgent]):
         positions = [
-            (2, 0),
-            (GRID_SIZE - 3,0),
+            (2, 1),
+            (GRID_SIZE - 3,1),
             (GRID_SIZE - 3, GRID_SIZE - 3),
             (2, GRID_SIZE - 3),
         ]
@@ -81,7 +81,7 @@ class Game:
         return dx, dy
 
     def place_bomb(self, player: Player) -> bool:
-        player_rect = player.get_collide_rect()
+        player_rect = player.get_player_collider_rect()
         index = player_rect.collidelist([bomb.rect for bomb in self.bomb_group.sprites()])
         if index >= 0:
             return False
