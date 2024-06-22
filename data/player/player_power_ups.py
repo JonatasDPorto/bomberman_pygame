@@ -6,7 +6,7 @@ class PlayerPowerUps:
         self.movement_speed = 2
         self.bomb_range = 1
         self.punch = False
-        self.bomb_count = 2
+        self.bomb_count = 1
         self.walk_through_bombs = False
     
     def power_up(self, power: PowerType):

@@ -10,6 +10,7 @@ from data.game_state_information import GameStateInformation
 from data.player.agents.player_agent import PlayerAgent
 from data.player.player_action import MoveAction, PlaceBombAction, StopAction
 from data.player.player_power_ups import PlayerPowerUps
+from data.player_state_information import PlayerStateInformation
 
 class Player(pygame.sprite.Sprite):
 
@@ -55,6 +56,7 @@ class Player(pygame.sprite.Sprite):
         self.current_bombs_in_ground -= 1
 
     def was_hit_by_explosion(self):
+        self.kill()
         pass
 
     def __is_colliding_with_object__(self, rect, collision_groups):
@@ -64,6 +66,33 @@ class Player(pygame.sprite.Sprite):
                     return True
         return False
                
+    
+    def get_position_in_grid(self):
+        rect = self.get_player_collider_rect()
+        ix = rect.centerx // TILE_SIZE
+        iy = rect.centery // TILE_SIZE
+
+        rx = rect.centerx % TILE_SIZE
+        ry = rect.centery % TILE_SIZE
+
+        plusx = round(rx/TILE_SIZE)
+        plusy = round(ry/TILE_SIZE)
+
+        return ix + plusx, iy + plusy
+    
+
+    def percentage_in_next_grid(self):
+        x, y = self.get_position_in_grid()
+        px, py = x * TILE_SIZE, y * TILE_SIZE
+
+        rx, ry = self.get_player_collider_rect().topleft
+
+        dfx, dfy = abs(px - rx), abs(py - ry)
+
+        perx, pery = dfx / TILE_SIZE, dfy / TILE_SIZE
+
+        return (perx + pery)/2
+
 
     def __can_move_in_direction__(self, collision_groups):
         if self.direction == Direction.DOWN:
@@ -86,6 +115,7 @@ class Player(pygame.sprite.Sprite):
             y = self.direction.value[1]
             rect = self.get_player_collider_rect()
             self.next_position = (rect.x + (x * TILE_SIZE), rect.y + (y * TILE_SIZE))
+            rect = self.get_player_collider_rect()
 
     def __movement__(self):
         if not self.is_moving:
@@ -155,8 +185,9 @@ class Player(pygame.sprite.Sprite):
             self.animation_id = 3
 
     def update(self, gameStateInformation: GameStateInformation, collision_groups):
-
-        self.next_action = self.agent.act(self, gameStateInformation)
+        xgrix, ygrid = self.get_position_in_grid()
+        playerStateInformation = PlayerStateInformation(xgrix, ygrid, self.direction, self.power_ups, self.current_bombs_in_ground)
+        self.next_action = self.agent.act(playerStateInformation,  gameStateInformation)
 
         if isinstance(self.next_action, MoveAction):
             self.__try_to_start_movement__(collision_groups)

@@ -6,6 +6,7 @@ from data.game_state_information import GameStateInformation
 from data.player.agents.player_agent import PlayerAgent
 from data.player.player import Player
 from data.player.player_action import MoveAction, PlaceBombAction, PlayerAction, PunchAction, StopAction
+from data.player_state_information import PlayerStateInformation
 
 class DefaultPlayerAgentKeyboardType(Enum):
     WASD = 0
@@ -17,7 +18,7 @@ class DefaultPlayerAgent(PlayerAgent):
         super().__init__()
         self.keyboard_type = keyboard_type
 
-    def act(self, player: Player, gameStateInformation: GameStateInformation) -> PlayerAction:
+    def act(self, playerStateInformation: PlayerStateInformation, gameStateInformation: GameStateInformation) -> PlayerAction:
 
         keyType = None
         if self.keyboard_type == DefaultPlayerAgentKeyboardType.ARROWS:
@@ -28,9 +29,9 @@ class DefaultPlayerAgent(PlayerAgent):
         keys = pygame.key.get_pressed()
 
         if keys[keyType[4]]:
-            return PlaceBombAction(*player.get_postion())
+            return PlaceBombAction(playerStateInformation.x, playerStateInformation.y)
         if keys[keyType[5]]:
-            return PunchAction(player.direction)
+            return PunchAction(playerStateInformation.direction)
         if keys[keyType[0]]:
             return MoveAction(Direction.LEFT)
         if keys[keyType[1]]:

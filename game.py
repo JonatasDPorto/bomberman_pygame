@@ -32,7 +32,7 @@ class Game:
 
     def update(self, trigger_next_frame):
 
-        state = GameStateInformation(trigger_next_frame, self.destroyable_group, self.players_group, self.walls_group, self.bomb_group)
+        state = GameStateInformation(trigger_next_frame, self.destroyable_group, self.players_group, self.walls_group, self.bomb_group, self.explosion_group)
         
         self.walls_group.update()
         self.ground_group.update()
@@ -52,8 +52,8 @@ class Game:
     def create_players(self, players: List[PlayerAgent]):
         positions = [
             (2, 1),
-            (GRID_SIZE - 3,1),
             (GRID_SIZE - 3, GRID_SIZE - 3),
+            (GRID_SIZE - 3,1),
             (2, GRID_SIZE - 3),
         ]
         for pos, agent in enumerate(players):
@@ -75,18 +75,12 @@ class Game:
         self.ground_group.build()
             
     
-    def __get_fixed_position__(self, x, y):
-        dx = (x // TILE_SIZE) * TILE_SIZE
-        dy = (y // TILE_SIZE) * TILE_SIZE
-        return dx, dy
-
     def place_bomb(self, player: Player) -> bool:
-        player_rect = player.get_player_collider_rect()
-        index = player_rect.collidelist([bomb.rect for bomb in self.bomb_group.sprites()])
-        if index >= 0:
+        if player.percentage_in_next_grid() > 0.2:
             return False
-        x, y = self.__get_fixed_position__(*player_rect.center)
-        Bomb(self, player, (x, y), self.bomb_group)
+        x, y = player.get_position_in_grid()
+
+        Bomb(self, player, (x * TILE_SIZE, y * TILE_SIZE), self.bomb_group)
         return True
     
     def __create_explosion_in_direction__(self, player: Player, calc_pos_1, calc_pos_2, anim_1, anim_2):
